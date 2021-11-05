@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub struct Server {
+pub struct ServerConfig {
     pub host: String,
     pub port: u16,
 }

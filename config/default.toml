@@ -1,3 +1,6 @@
 [server]
 port = 5000
 host = "localhost"
+
+[database]
+url = "" # should be overwritten by the env specific config file

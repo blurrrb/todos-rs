@@ -1,29 +1,28 @@
-mod app_env;
-mod server;
+pub mod app_env;
+pub mod database;
+pub mod server;
 
 use app_env::ApplicationEnvironment;
 use config::{Config, ConfigError, Environment, File};
-use dotenv::dotenv;
+use database::DatabaseConfig;
 use serde::Deserialize;
-use server::Server;
+use server::ServerConfig;
 
 #[derive(Debug, Deserialize)]
-pub struct Settings {
-    server: Server,
+pub struct ApplicationConfig {
+    pub database: DatabaseConfig,
+    pub server: ServerConfig,
 }
 
-impl Settings {
-    pub fn load() -> Result<Self, ConfigError> {
+impl ApplicationConfig {
+    pub fn new() -> Result<Self, ConfigError> {
         let environment = match std::env::var("RUST_ENV") {
             Ok(env) => match env.as_str() {
-                "development" => ApplicationEnvironment::Development,
                 "production" => ApplicationEnvironment::Production,
                 _ => ApplicationEnvironment::Development,
             },
             Err(_) => ApplicationEnvironment::Development,
         };
-
-        dotenv().ok();
 
         let mut s = Config::default();
 

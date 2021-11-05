@@ -1,6 +1,7 @@
-[server]
+[server_config]
 port = 5000
 host = "localhost"
 
-[database]
-url = "" # should be overwritten by the env specific config file
+[database_config]
+url = ""      # should be overwritten by the env specific config file
+pool_size = 5

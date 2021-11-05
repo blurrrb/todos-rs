@@ -10,8 +10,8 @@ use server::ServerConfig;
 
 #[derive(Debug, Deserialize)]
 pub struct ApplicationConfig {
-    pub database: DatabaseConfig,
-    pub server: ServerConfig,
+    pub database_config: DatabaseConfig,
+    pub server_config: ServerConfig,
 }
 
 impl ApplicationConfig {

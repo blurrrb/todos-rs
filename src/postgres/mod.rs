@@ -12,7 +12,7 @@ impl Postgres {
     pub fn new(db_config: &DatabaseConfig) -> Postgres {
         let manager = ConnectionManager::<PgConnection>::new(&db_config.url);
         let pool = Pool::builder()
-            .max_size(3)
+            .max_size(db_config.pool_size)
             .build(manager)
             .expect("Failed to create pool.");
 

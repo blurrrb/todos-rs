@@ -20,21 +20,21 @@ impl TodoRepository for Postgres {
         }
     }
 
-    fn create(&self, todo: Todo) -> Todo {
+    fn create(&mut self, todo: Todo) -> Todo {
         diesel::insert_into(todos)
             .values(&todo)
             .get_result(&self.get_connection())
             .expect("Error saving new todo")
     }
 
-    fn update(&self, todo: Todo) -> Todo {
+    fn update(&mut self, todo: Todo) -> Todo {
         diesel::update(todos.find(todo.id))
             .set(&todo)
             .get_result(&self.get_connection())
             .expect("Error updating todo")
     }
 
-    fn delete(&self, id: Uuid) -> bool {
+    fn delete(&mut self, id: Uuid) -> bool {
         diesel::delete(todos.find(id))
             .execute(&self.get_connection())
             .is_ok()

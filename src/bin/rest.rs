@@ -1,9 +1,10 @@
 use todos::config::ApplicationConfig;
-use todos::postgres::Postgres;
+use todos::inmem_store::InMemStore;
+use todos::postgres_store::Postgres;
 use todos::todos::{Todo, TodoRepository};
 use uuid::Uuid;
 
-fn inject_db(database: &impl TodoRepository) -> Todo {
+fn inject_db(database: &mut impl TodoRepository) -> Todo {
     let todo = Todo {
         id: Uuid::new_v4(),
         item: "Dependency injection testing".to_string(),
@@ -12,11 +13,8 @@ fn inject_db(database: &impl TodoRepository) -> Todo {
     database.create(todo)
 }
 
-fn main() {
-    let config = ApplicationConfig::new().unwrap();
+fn run(config: &ApplicationConfig, todos_repository: &mut impl TodoRepository) {
     println!("{:?}", config);
-
-    let todos_repository: Postgres = Postgres::new(&config.database_config);
 
     let todo = Todo {
         id: Uuid::new_v4(),
@@ -40,7 +38,7 @@ fn main() {
         completed: false,
     });
 
-    let todo3 = inject_db(&todos_repository);
+    let todo3 = inject_db(todos_repository);
 
     println!("{:?}", todos_repository.get_all());
 
@@ -49,4 +47,18 @@ fn main() {
     todos_repository.delete(todo3.id);
 
     println!("{:?}", config);
+}
+
+fn main() {
+    let config = ApplicationConfig::new().unwrap();
+
+    let mut todos_repository_pg = Postgres::new(&config.database_config);
+
+    println!("postgres running");
+    run(&config, &mut todos_repository_pg);
+
+    let mut todos_repository_inmem = InMemStore::new();
+
+    println!("inmem running");
+    run(&config, &mut todos_repository_inmem);
 }
